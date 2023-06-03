@@ -4,6 +4,7 @@ from cnnClassifier.components.data_ingestion import DataIngestion
 from cnnClassifier.components.prepare_basemodel import PrepareBaseModel
 from cnnClassifier.components.prepare_callback import PrepareCallback
 from cnnClassifier.components.model_trainer import Training
+from cnnClassifier.components.model_evaluation import Evaluation
 
 
 class TrainingPipeline:
@@ -36,6 +37,14 @@ class TrainingPipeline:
         training.get_base_model()
         training.train_valid_generator()
         training.train(callback_list=callback_list)
+
+
+    def modelevaluation(self):
+        config = ConfigurationManager()
+        val_config = config.get_validation_config()
+        evaluation = Evaluation(val_config)
+        evaluation.evaluation()
+        evaluation.save_score()
 
 
 
