@@ -1,9 +1,9 @@
+from cnnClassifier import logger
 from cnnClassifier.config.configuration import ConfigurationManager
 from cnnClassifier.components.data_ingestion import DataIngestion
 from cnnClassifier.components.prepare_basemodel import PrepareBaseModel
-from cnnClassifier import logger
-
-
+from cnnClassifier.components.prepare_callback import PrepareCallback
+from cnnClassifier.components.model_trainer import Training
 
 
 class TrainingPipeline:
@@ -23,6 +23,19 @@ class TrainingPipeline:
         prepare_base_model = PrepareBaseModel(config=prepare_base_model_config)
         prepare_base_model.get_base_model()
         prepare_base_model.update_base_model()
+
+    
+    def preparecallbackandmodeltraing(self):
+        config = ConfigurationManager()
+        prepare_callbacks_config = config.get_prepare_callback_config()
+        prepare_callbacks = PrepareCallback(config=prepare_callbacks_config)
+        callback_list = prepare_callbacks.get_tb_ckpt_callbacks()
+
+        training_config = config.get_training_config()
+        training = Training(config=training_config)
+        training.get_base_model()
+        training.train_valid_generator()
+        training.train(callback_list=callback_list)
 
 
 
